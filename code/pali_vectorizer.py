@@ -7,7 +7,7 @@ import numpy as np
 import fasttext
 
 from utils.constants import *  ###################################################
-from text_file import TextFile
+from code.pali_text_file import TextFile
 
 
 class Vectorizer:

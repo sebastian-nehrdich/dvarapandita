@@ -2,8 +2,8 @@ from pathlib import Path
 from random import randint
 import multiprocessing
 
-from text_file import TextFile
-from vectorizer import Vectorizer
+from code.pali_text_file import TextFile
+from code.pali_vectorizer import Vectorizer
 
 class FileMngr:
     
