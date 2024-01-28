@@ -33,3 +33,72 @@ def calculate_stats(c, output_path):
     extract_stats_from_files(output_path)
     collect_stats_from_folder(output_path)
     
+########################################################################
+
+from code.pali_stemmer import Stemmer
+import os
+import sys
+@task
+def stem_pali(c,
+              input_dir,
+              model_path,
+              output_dir=None,
+              lang="pli"):
+    stmr = Stemmer(lang=lang,
+                   spm_model_path=model_path,
+                input_dir=input_dir,
+                output_dir=output_dir,
+                )
+    stmr.process_src_dir()
+
+# invoke vec-pali --input-dir-path="/home/wo/bn/dvarapandita/test-data/pli/stemmed" --output-dir-name="vectors" --n-buckets=1 --n-proc=6
+@task
+def vec_pali(c,
+            input_dir_path,
+            output_dir_name,
+            n_buckets,
+            n_proc,
+             ):
+    python_path = sys.executable
+    print(python_path)
+    os.system(f'''
+                INPUT_DIR_PATH={input_dir_path} \
+                OUTPUT_DIR_NAME={output_dir_name} \
+                N_BUCKETS={n_buckets} \
+                N_PROC={n_proc} \
+                {python_path} pali_vectorize_all.py \
+              ''')
+    
+from utils.indexing import CalculateResults
+from calculate_index import create_index
+
+# invoke calc-pali-bucket --bucket-path="/tier2/ucb/nehrdich/pli/vectors/folder0000/"
+@task
+def calc_pali_bucket(c,
+                    bucket_path,
+              ):
+        lang = "pli"
+        index_method = "cpu"
+        alignment_method="local"
+    
+        index = create_index(bucket_path, index_method)
+        c = CalculateResults(bucket_path, lang, index_method, cindex=index, alignment_method=alignment_method)
+        c.calc_results_folder(bucket_path)
+        
+# invoke calc-pali-all-buckets --all-buckets-parent="/tier2/ucb/nehrdich/pli/vectors/"
+@task
+def calc_pali_all_buckets(c,
+                    all_buckets_parent,
+              ):
+    
+    all_buckets = [p for p in os.listdir(all_buckets_parent) if "folder" in p]
+    
+    print(all_buckets)
+    for bucket_path in all_buckets:
+        lang = "pli"
+        index_method = "cpu"
+        alignment_method="local"
+    
+        index = create_index(bucket_path, index_method)
+        c = CalculateResults(bucket_path, lang, index_method, cindex=index, alignment_method=alignment_method)
+        c.calc_results_folder(bucket_path)

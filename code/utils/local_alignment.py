@@ -1,6 +1,8 @@
 from Bio import Align
 import re
 from utils.constants import PUNC, TIBETAN_STEMFILE
+from pathlib import Path
+import os
 
 def create_aligner(lang):
     aligner = Align.PairwiseAligner()
@@ -14,6 +16,8 @@ def create_aligner(lang):
 
 def create_replaces_dictionary(path):
     replaces_dictionary = {}
+    utils_dir = os.path.dirname(os.path.realpath(__file__)) # find the file's dir
+    path = Path(utils_dir).parent / path
     r = open(path, "r")
     for line in r:
         headword = line.split('\t')[0]
