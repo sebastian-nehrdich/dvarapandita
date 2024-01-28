@@ -9,16 +9,18 @@ class FileMngr:
     
     langs = ["pli"]
 
-    root_path = Path("../test-data")
     original_dir= "original"
     stemmed_dir= "stemmed"
     vectors_dir= "vectors"
 
     def __init__(self,
                  n_buckets,
-                 custorm_output_dir=None,
-                 threads=0
+                 output_root_path,
+                 ref_path,
+                 threads=0,
                  ) -> None:
+        self.root_path = Path(output_root_path)
+        self.ref_path = Path(ref_path)
         self.n_buckets = n_buckets
         self.threads = threads
         self.stemmed_path = self.init_stemmed_path_dic()
@@ -59,15 +61,3 @@ class FileMngr:
             return f'{hash(TextFile_obj.name) % self.n_buckets:04}'
         else:
             return ""
-
-
-def vectorize_text(file_path):
-    Vectorizer(fm, lang).process_text(file_path)
-def vectorize_all(lang, n_buckets, threads):
-    fm = FileMngr(n_buckets=n_buckets)
-
-    list_of_paths = fm.get_stemmed_files(lang)
-    pool = multiprocessing.Pool(processes=threads)
-    pool.map(vectorize_text, list_of_paths)
-    pool.close()
-

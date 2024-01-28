@@ -58,10 +58,10 @@ class Vectorizer:
         )
 
     def init_vector_model(self):
-        return fasttext.load_model(VECTOR_PATH + self.lang + ".bin")
+        return fasttext.load_model(str(self.file_mngr.ref_path / self.lang) + ".bin")
 
     def read_stopwords(self):
-        f = open(STOPWORDS_PATH + self.lang + "_stop.txt", "r")
+        f = open(str(self.file_mngr.ref_path / self.lang) + "_stop.txt", "r")
         stopwords = []
         for line in f:
             m = re.search("(.*)", line)  # this is for tibetan
