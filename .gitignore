@@ -10,3 +10,5 @@ venv
 *.model
 *.vec
 *.vocab
+
+*\.[eo][0-9]*
