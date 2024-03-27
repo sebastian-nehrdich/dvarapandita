@@ -48,7 +48,7 @@ def stem_file(data):
     path_short = os.path.splitext(path)[0]
     lines = crop_lines(path, lang)
     filename = create_fname(path)
-    filenames, line_numbers, lines, cleaned_lines = text2lists(filename, lines, lang)
+    filenames, line_numbers, lines, cleaned_lines = text2lists(filename, lines, lang) # mainly cleaning
     text_df = pd.DataFrame(
         {
             "filename": filenames,

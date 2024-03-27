@@ -44,6 +44,7 @@ def create_fname(text_path):
 
 
 def crop_lines(filepath, lang):
+    """makes the longer lines shorter and merges shorter lines"""
     lines = []
     with open(filepath, 'r') as file:
         for line in file:
